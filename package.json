@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node src/index.js"
+    "start": "babel-node src/index.js",
+    "convert": "xml-js UVU_allCourses.xml --compact --out uvu_courses.json"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +16,9 @@
     "babel-preset-stage-2": "^6.24.1"
   },
   "dependencies": {
-    "dotenv": "^6.1.0"
+    "axios": "^0.18.0",
+    "dotenv": "^6.1.0",
+    "graphql-request": "^1.8.2",
+    "xml-js": "^1.6.8"
   }
 }
