@@ -5,12 +5,7 @@ import { GraphQLClient } from 'graphql-request'
 
 const client = new GraphQLClient('http://localhost:4466')
 
-const content = fs.readFileSync("./uvu_courses.json");
-const catalog = JSON.parse(content)
 
-const allCourses = catalog.comet.course
-
-const dgmCourses = allCourses.filter(course => course.prefix._text === 'DGM');
 /* 
 console.log(dgmCourses.map(crs => {
     return {
@@ -70,15 +65,23 @@ const mutation = `mutation createCourse(
         }
     }`
 
+    let count = 0
+
 async function main() {
+    const content = fs.readFileSync("./uvu_courses.json")
+    const catalog = JSON.parse(content)
+    const allCourses = catalog.comet.course
+    const dgmCourses = allCourses.filter(course => course.prefix._text === 'DGM')
+
     for (let crs of dgmCourses) {
+        count++
         const ownerEmail = 'admin@uvu.edu'
         let variables = {
             owner: {
                 connect: {
-                  email: ownerEmail
+                    email: ownerEmail
                 }
-              },
+            },
             prefix: crs.prefix._text || '',
             subject: crs.subject._text || '',
             number: crs.number._text || '',
@@ -93,10 +96,10 @@ async function main() {
             preorco: crs.preorco._text || '',
             description: crs.description._text || ''
         }
+        await client
+            .request(mutation, variables)
+            .then(data => console.log(data))
+            .catch(err => console.log(`${err} ${count}`))
     }
-    await client
-        .request(mutation, variables)
-        .then(data => console.log(data))
-        .catch(err => console.log(`${err} ${count}`))
 }
 main()
